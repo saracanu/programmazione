@@ -1,16 +1,21 @@
 import("stdfaust.lib");
 
+osc1group(x) = vgroup("f1", x);
+osc2group(x) = vgroup("f2", x);
+osc3group(x) = vgroup("f3", x);
+osc4group(x) = vgroup("f4", x);
+
 frq = vslider("f1 [style:knob]", 440,100,20000,1); 
 
-pan1 = vslider("p1 [style:knob]", 0.5,0,1,0.01);
-pan2 = vslider("p2 [style:knob]", 0.5,0,1,0.01);
-pan3 = vslider("p3 [style:knob]", 0.5,0,1,0.01);
-pan4 = vslider("p4 [style:knob]", 0.5,0,1,0.01);
+pan1 = osc1group (vslider("[1] p1 [style:knob]", 0.5,0,1,0.01));
+pan2 = osc2group (vslider("[1] p2 [style:knob]", 0.5,0,1,0.01));
+pan3 = osc3group (vslider("[1] p3 [style:knob]", 0.5,0,1,0.01));
+pan4 = osc4group (vslider("[1] p4 [style:knob]", 0.5,0,1,0.01));
 
-vol1 =vslider ("voll", 0.0,0,1,0.01);
-vol2 =vslider ("voll", 0.0,0,1,0.01);
-vol3 =vslider ("voll", 0.0,0,1,0.01);
-vol4 =vslider ("voll", 0.0,0,1,0.01);
+vol1 = osc1group (vslider ("[2] voll", 0.0,0,1,0.01));
+vol2 = osc2group (vslider ("[2] voll", 0.0,0,1,0.01));
+vol3 = osc3group (vslider ("[2] voll", 0.0,0,1,0.01));
+vol4 = osc4group (vslider ("[2] voll", 0.0,0,1,0.01));
   
 process = os.oscsin(frq*1), os.oscsin(frq*2),
           os.oscsin(frq*3), os.oscsin(frq*4) :
