@@ -2,30 +2,22 @@ import("stdfaust.lib");
 
 vmeter(x) = attach(x, envelop(x) : vbargraph("[99][unit:dB]", -70, +5))
   with{
-  envelop = abs : max ~ -(1.0/ma.SR) : max(ba.db2linear(-70)) : ba.linear2db;
+    envelop = abs : max ~ -(1.0/ma.SR) : max(ba.db2linear(-70)) : ba.linear2db; 
 };
 
-
-
-frq = vslider("[01] f1 [style:knob]", 440,100,20000,1); 
-
-
-oscill(o) = os.oscsin(frq*ooo) : hgroup ("[02] OSC %ooo", *(vol) <: * (sqrt(1-pan)), * (sqrt(pan)) : vmeter, vmeter)
+oscill(o) = os.oscsin(frq*ooo) : hgroup("[02] OSC %ooo", * (vol) <: * (sqrt(1-pan)), * (sqrt(pan)))
   with{
-    ooo = o + (001);
+    ooo = o +(001);
     panfadg(x) = vgroup("[01]", x);
-    pan = panfadg(vslider("[01] pan [style:knob]", 0,-90,90,0.1) + 90 / 180 : si.smoo);
-    vol = panfadg(vslider("[02] vol [unit:dB]", 0,-96,0,1.0) : ba.db2linear : si.smoo);
+    frq = vslider("[01] f1 [style:knob]", 440,100,20000,0.01) : si.smoo;
+    pan = panfadg(vslider("[01] PAN [style:knob]", 0,-90,90,0.1) + 90 / 180 : si.smoo);
+    vol = panfadg(vslider("[02] VOL [style:knob]", 0,0,1,0.1) : si.smoo);
 };
 
-   
-stereo = *(vol), *(vol) :vmeter, vmeter
+stereo = hgroup("[129] STEREO OUT", *(vol), *(vol) : vmeter, vmeter)
   with{
-  master(x) = hgroup("[01]", x);
-  vol = master(vslider("[01] vol [unit:dB]", 0,-96,0,1.0) : ba.db2linear : si.smoo);
+  vol = vslider("[01] [unit:dB]", 0,-96,0,1.0) : ba.db2linear : si.smoo;
 };
-
-process = hgroup("OSCILLATORS BANK", par(i, 4, oscill(i))) :> stereo ;
-         
+  
+process = hgroup("OSCILLATORS BANK", par(i, 64, oscill(i)) :> stereo);
 //ordine oscillatori
-//controllo volume all'uscita
