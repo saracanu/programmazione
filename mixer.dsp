@@ -21,6 +21,6 @@ channel(c) = hgroup ("[01] CH%c", _ <:
              ba.selectn(2,pmode) : 
              * (fader), * (fader) : vmeter, vmeter);
 
-process = hgroup ("MIXER", par (i, 8, channel(i)));
+process = hgroup ("MIXER", par (i, 8, channel(i))) :> _,_ ;
 
 
